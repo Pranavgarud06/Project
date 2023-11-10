@@ -1,40 +1,24 @@
-import Header from "./components/Header/Header";
-import Form from "./components/Form/UserForm";
-import Result from "./components/ResultTable/Result";
-import { useState } from "react";
+import React, { useState } from 'react';
+
+import AddUser from './components/Users/AddUser';
+import UsersList from './components/Users/UsersList';
+
 function App() {
-  const [userInput, setUserInput] = useState(null);
-  const calculateHandler = (userInput) => {
-    setUserInput(userInput);
+  const [usersList, setUsersList] = useState([]);
 
+  const addUserHandler = (uName, uAge) => {
+    setUsersList((prevUsersList) => {
+      return [
+        ...prevUsersList,
+        { name: uName, age: uAge, id: Math.random().toString() },
+      ];
+    });
   };
-
-  const yearlyData = [];
-  if (userInput) {
-    let currentSavings = +userInput['current-savings'];
-    const yearlyContribution = +userInput['yearly-contribution'];
-    const expectedReturn = +userInput['expected-return'] / 100;
-    const duration = +userInput['duration'];
-
-    for (let i = 0; i < duration; i++) {
-      const yearlyInterest = currentSavings * expectedReturn;
-      currentSavings += yearlyInterest + yearlyContribution;
-      yearlyData.push({
-
-        year: i + 1,
-        yearlyInterest: yearlyInterest,
-        savingsEndOfYear: currentSavings,
-        yearlyContribution: yearlyContribution,
-      });
-    }
-  }
 
   return (
     <div>
-      <Header />
-      <Form onCalculate={calculateHandler} />
-      {!userInput && <p style={{textAlign: "center"}}>No investment calculated yet.</p>}
-      {userInput &&  <Result info ={yearlyData} initialInvestment = {userInput['current-savings']}/>}
+      <AddUser onAddUser={addUserHandler} />
+      <UsersList users={usersList} />
     </div>
   );
 }
